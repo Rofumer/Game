@@ -457,7 +457,7 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
         const int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
         const int MAX_FRAMESKIP = 10;
 
-        public const int ChunksRenderDistance=2;
+        public const int ChunksRenderDistance = 32;
         public static int[] temparray1 = new int[ChunksRenderDistance * ChunksRenderDistance];
 
         public static int chunkX=0;
@@ -583,17 +583,17 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
             }
 
 
-            for (int x = 0; x < ChunksRenderDistance * ChunksRenderDistance; x++)
+            ////for (int x = 0; x < ChunksRenderDistance * ChunksRenderDistance; x++)
 
-            {
+            ////{
 
-                temparray1[x] = x;
+                ////temparray1[x] = x;
 
-            }
+            ////}
 
-            //temparray1 = f(temparray);
+            temparray1 = f(temparray);
 
-            //Array.Reverse(temparray1);
+            Array.Reverse(temparray1);
 
             int arrlength=temparray1.Length
 ;
@@ -655,28 +655,7 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
             public static void Point2(object? absposition)
         {
 
-           var chunkX_ = 0; var chunkZ_ = 0;
-
-            static int[] f(int[,] a)
-            {
-                var r = new List<int>();
-                var n = a.GetLength(0);
-                int j = -1, i = 0;
-                bool h = true; bool d = false; int c = 0; int p = n; int max = n;
-                for (var cnt = 1; cnt <= a.Length; cnt++)
-                {
-                    i = h ? i : !d ? ++i : --i; j = !h ? j : !d ? ++j : --j; p--; r.Add(a[i, j]);
-                    if (p <= 0)
-                    {
-                        h = !h; if ((c + 1) % 2 == 0) { d = !d; }
-                        if (cnt == n || c > 1 && (c + 1) % 2 != 0) { --max; }
-                        p = max; c++;
-                    }
-                }
-                return r.ToArray();
-            }
-
-            int[,] temparray = new int[ChunksRenderDistance, ChunksRenderDistance];
+           
 
 
             /*for (int x = 0; x < ChunksRenderDistance; x++)
@@ -786,10 +765,13 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
             */
 
 
-            int arrlength = temparray1.Length;
+            
 
             //while(false)
             var counter = 0;
+
+            var tempvector = Camera.absposition-Camera.previousposition;
+            var temposition = Camera.absposition;
 
             for (int x = 0; x <ChunksRenderDistance; x++)
             //for (int x = ChunksRenderDistance; x < ChunksRenderDistance; x++)
@@ -805,15 +787,16 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
 
 
 
-                    var tempvector = Camera.absposition - Camera.previousposition;
-                    var tempvector2 = new Vector3(Camera.absposition.X,0,Camera.absposition.Z)- chunk[x, z].position;
+                    var tempvector2 = new Vector3((int)(temposition.X / 16) * 16 , 0, (int)(temposition.Z / 16) * 16) - chunk[x, z].position;
+
                     
 
-                    if (tempvector2.Length >= ChunksRenderDistance*16)
-                    {
 
-                        var xdelta = (int)(temparray1[x * ChunksRenderDistance + z] / ChunksRenderDistance);
-                        var zdelta = (int)(temparray1[x * ChunksRenderDistance + z] % ChunksRenderDistance);
+                    
+
+
+                        ////var xdelta = (int)(temparray1[x * ChunksRenderDistance + z] / ChunksRenderDistance);
+                        /////var zdelta = (int)(temparray1[x * ChunksRenderDistance + z] % ChunksRenderDistance);
 
                         //chunk[chunkX, chunkZ] = new Chunk(new Vector3((int)(temparray1[arrlength-1-chunkX*ChunksRenderDistance - chunkZ]/ChunksRenderDistance)*16-(int)(ChunksRenderDistance*16/2), 0, (temparray1[arrlength - 1- chunkX * ChunksRenderDistance - chunkZ]% ChunksRenderDistance) * 16 - (int)(ChunksRenderDistance * 16 / 2)));
                         //chunk[chunkX, chunkZ] = new Chunk(new Vector3(chunkX * 16 - (ChunksRenderDistance * 16 / 2), 0,chunkZ*16-ChunksRenderDistance * 16 / 2));
@@ -822,14 +805,16 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
 
 
 
+                        
+
+
+                        if (Math.Abs(tempvector2.X) > ChunksRenderDistance * 16 / 2 && Math.Abs(tempvector2.Z) > ChunksRenderDistance * 16 / 2)
+                        {
+
                         chunk[x, z].Genered = false;
                         chunk[x, z].Builded = false;
 
-                        chunk[x, z].position = new Vector3(chunk[x, z].position.X + (int)(tempvector.X/16)*16*ChunksRenderDistance, 0,chunk[x, z].position.Z + (int)(tempvector.Z/16)*16 * ChunksRenderDistance);
-                        //chunk[x, z].position = new Vector3((int)((int)(Camera.absposition.X/16)*16 + xdelta * 16 - (ChunksRenderDistance * 16 / 2)), 0, (int)((int)(Camera.absposition.Z / 16) * 16+zdelta * 16 - ChunksRenderDistance * 16 / 2));
-                        //chunk[chunkX_, chunkZ_].position = new Vector3((int)(chunkX_ * 16 - (ChunksRenderDistance * 16 / 2)), 0, (int)(chunkZ_ * 16 - ChunksRenderDistance * 16 / 2));
-
-
+                        chunk[x, z].position = new Vector3(((int)(temposition.X / 16) * 16) + (ChunksRenderDistance / 2 - 1) * 16 * Math.Sign(tempvector.X), 0, ((int)(temposition.Z / 16) * 16) + (ChunksRenderDistance / 2 - 1) * 16 * Math.Sign(tempvector.Z));
 
                         chunk[x, z].GenChunk(new Vector3((int)(((Vector3)absposition).X), 0, (int)(((Vector3)absposition).Z)));
                         //Console.WriteLine("Chunk GeN hightmap Stopped {0}", stopwatch.ElapsedMilliseconds);
@@ -841,10 +826,75 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
                         chunk[x, z].Genered = true;
 
                         counter++;
-
                         Console.WriteLine("Chunk {0} builded", counter);
 
                     }
+                        else
+                        {
+                            if (Math.Abs(tempvector2.X) > ChunksRenderDistance * 16 / 2)
+                            {
+
+                            chunk[x, z].Genered = false;
+                            chunk[x, z].Builded = false;
+
+                            chunk[x, z].position = new Vector3(((int)(temposition.X / 16) * 16) + (ChunksRenderDistance / 2 - 1) * 16 * Math.Sign(tempvector.X), 0, chunk[x, z].position.Z);
+                            //chunk[x, z].position = new Vector3(chunk[x, z].position.X,0,((int)(Camera.absposition.Z / 16) * 16) - 16);
+
+                            chunk[x, z].GenChunk(new Vector3((int)(((Vector3)absposition).X), 0, (int)(((Vector3)absposition).Z)));
+                            //Console.WriteLine("Chunk GeN hightmap Stopped {0}", stopwatch.ElapsedMilliseconds);
+                            chunk[x, z].GenBlocks();
+                            //Console.WriteLine("Chunk GeN Blocks Stopped {0}", stopwatch.ElapsedMilliseconds);
+                            chunk[x, z].GenFaces(new Vector3mine(0, 0, 0));
+                            //?/chunk[x, z] = new Chunk(new Vector3(chunkX * 16, 0, chunkZ * 16));
+                            //chunk[chunkX, chunkZ].BuildChunk();
+                            chunk[x, z].Genered = true;
+
+                            counter++;
+                            Console.WriteLine("Chunk {0} builded", counter);
+
+                        }
+                            if (Math.Abs(tempvector2.Z) > ChunksRenderDistance * 16 / 2)
+                            {
+
+                            chunk[x, z].Genered = false;
+                            chunk[x, z].Builded = false;
+
+                            chunk[x, z].position = new Vector3(chunk[x, z].position.X, 0, ((int)(temposition.Z / 16) * 16) + (ChunksRenderDistance / 2 - 1) * 16 * Math.Sign(tempvector.Z));
+                            //chunk[x, z].position = new Vector3(chunk[x, z].position.X,0,((int)(Camera.absposition.Z / 16) * 16) - 16);
+
+                            chunk[x, z].GenChunk(new Vector3((int)(((Vector3)absposition).X), 0, (int)(((Vector3)absposition).Z)));
+                            //Console.WriteLine("Chunk GeN hightmap Stopped {0}", stopwatch.ElapsedMilliseconds);
+                            chunk[x, z].GenBlocks();
+                            //Console.WriteLine("Chunk GeN Blocks Stopped {0}", stopwatch.ElapsedMilliseconds);
+                            chunk[x, z].GenFaces(new Vector3mine(0, 0, 0));
+                            //?/chunk[x, z] = new Chunk(new Vector3(chunkX * 16, 0, chunkZ * 16));
+                            //chunk[chunkX, chunkZ].BuildChunk();
+                            chunk[x, z].Genered = true;
+
+                            counter++;
+                            Console.WriteLine("Chunk {0} builded", counter);
+                        }
+                        }
+                        
+
+                        
+
+
+
+                        //}
+
+
+                        //chunk[x, z].position = new Vector3(chunk[x, z].position.X + ((int)(tempvector.X/16))*ChunksRenderDistance*16, 0,chunk[x, z].position.Z+((int)(tempvector.Z / 16)) * ChunksRenderDistance * 16);
+                        //chunk[x, z].position = new Vector3((int)((int)(Camera.absposition.X/16)*16 + xdelta * 16 - (ChunksRenderDistance * 16 / 2)), 0, (int)((int)(Camera.absposition.Z / 16) * 16+zdelta * 16 - ChunksRenderDistance * 16 / 2));
+                        //chunk[chunkX_, chunkZ_].position = new Vector3((int)(chunkX_ * 16 - (ChunksRenderDistance * 16 / 2)), 0, (int)(chunkZ_ * 16 - ChunksRenderDistance * 16 / 2));
+
+
+
+                        
+
+                        
+
+                    
                                    
                 }
                 
@@ -853,6 +903,7 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
             }
 
             Camera.previousposition=Camera.absposition;
+            Camera.previousposition.Y = 0;
 
 
 
@@ -1169,13 +1220,8 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
 
             for (int x = 0; x < ChunksRenderDistance; x++)
             {
-                for (int z1 = ChunksRenderDistance/2; z1 < ChunksRenderDistance; z1++)
+                for (int z = 0; z < ChunksRenderDistance; z++)
                 {
-
-
-                    int z;
-                    z = z1;
-
                     if (chunk[x, z] != null)
                     {
 
@@ -1220,59 +1266,6 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
                             chunk[x, z].Render(program);
 
                         }
-
-
-                    }
-
-                    z = ChunksRenderDistance - z1 -1;
-
-                    if (chunk[x, z] != null)
-                    {
-
-                        if (chunk[x, z].Genered && !chunk[x, z].Builded)
-                        //if (!chunk[x, z].Builded)
-                        {
-
-
-                            if (chunk[x, z].Rebuild)
-                            {
-                                chunk[x, z].ReBuildChunk();
-                            }
-                            else
-                            {
-                                chunk[x, z].BuildChunk();
-                                chunk[x, z].Rebuild = true;
-
-                            }
-
-                            chunk[x, z].Builded = true;
-
-
-
-
-
-
-
-
-                        }
-                        if (chunk[x, z].Builded)
-                        {
-
-
-                            model = Matrix4.Identity;
-
-                            model = model * Matrix4.CreateTranslation(chunk[x, z].position - Camera.absposition);
-
-
-
-                            GL.UniformMatrix4(modelLocation, true, ref model);
-
-
-                            chunk[x, z].Render(program);
-
-                        }
-
-
                     }
                 }
             }

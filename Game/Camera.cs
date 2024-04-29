@@ -161,10 +161,13 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
             }
 
 
+            //previousposition.Y = 0;
+
             if ((Math.Abs(absposition.X)%16< Math.Abs(tempabsposition.X)%16)&&(Math.Abs(absposition.X)> Math.Abs(tempabsposition.X))|| (Math.Abs(absposition.X) % 16 > Math.Abs(tempabsposition.X) % 16) && (Math.Abs(absposition.X) < Math.Abs(tempabsposition.X)))
             {
 
 
+                previousposition.Y = 1;
                 
 
                 //Game.myThread2.Abort();
@@ -188,10 +191,14 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
             }
             if ((Math.Abs(absposition.Z) % 16 < Math.Abs(tempabsposition.Z) % 16) && (Math.Abs(absposition.Z) > Math.Abs(tempabsposition.Z)) || (Math.Abs(absposition.Z) % 16 > Math.Abs(tempabsposition.Z) % 16) && (Math.Abs(absposition.Z) < Math.Abs(tempabsposition.Z)))
             {
-                
 
+                if (previousposition.Y == 1) {
+                    previousposition.Y = 3;
+                }
+                else {
+                    previousposition.Y = 2;
+                }
 
-                
 
                 //Game.myThread2.Abort();
                 Console.WriteLine("Starting Thread");
