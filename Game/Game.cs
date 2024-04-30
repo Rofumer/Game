@@ -1429,12 +1429,12 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
 
 
 
-                if (GetBlock(new Vector3((int)camera.position.X+ChunksRenderDistance * 16/2, (int)(camera.position.Y - 2), (int)(camera.position.Z)+ChunksRenderDistance * 16/2)).type == BlockType.EMPTY)
+                if (GetBlock(new Vector3((int)Camera.absposition.X+ChunksRenderDistance * 16/2, (int)(Camera.absposition.Y - 2), (int)(Camera.absposition.Z)+ChunksRenderDistance * 16/2)).type == BlockType.EMPTY)
                 {
 
                     //if()
 
-                    //camera.position.Y -= 0.1f;
+                    Camera.absposition.Y -= 0.3f;
                 
                 }
 

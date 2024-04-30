@@ -17,7 +17,7 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
     public class Camera
     {
         // CONSTANTS
-        private float SPEED = 80f;
+        private float SPEED = 10f;
         private float SCREENWIDTH;
         private float SCREENHEIGHT;
         private float SENSITIVITY = 5f;
