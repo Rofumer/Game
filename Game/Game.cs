@@ -197,18 +197,7 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
         {
             base.OnMouseDown(e);
             
-
-            int chunkXPos = (RayCastBlock.position.X + ChunksRenderDistance * 16 / 2) / 16;
-            int chunkZPos = (RayCastBlock.position.Z + ChunksRenderDistance * 16 / 2) / 16;
-
-
-            var number = Array.IndexOf(temparray1, chunkXPos * ChunksRenderDistance + chunkZPos);
-
-            chunkXPos = (int)(number / ChunksRenderDistance);
-            chunkZPos = (int)(number % ChunksRenderDistance);
-
-            int blockchunkXPos = (RayCastBlock.position.X + ChunksRenderDistance * 16 / 2) % 16;
-            int blockchunkZPos = (RayCastBlock.position.Z + ChunksRenderDistance * 16 / 2) % 16;
+                       
 
             if (e.Button == MouseButton.Right)
             {
@@ -216,37 +205,54 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
 
                 //if 
 
-                
 
-                chunk[chunkXPos, chunkZPos].chunkBlocks[blockchunkXPos+(int)RayCastBlock.norm.X, RayCastBlock.position.Y + (int)RayCastBlock.norm.Y, blockchunkZPos + (int)RayCastBlock.norm.Z].type = BlockType.DIRT;
-                    //new Block(new Vector3mine(RayCastBlock.position.X, RayCastBlock.position.Y, RayCastBlock.position.Z),BlockType.DIRT);
-                //chunk[chunkXPos, chunkZPos].chunkBlocks[blockchunkXPos + (int)RayCastBlock.norm.X, RayCastBlock.position.Y + (int)RayCastBlock.norm.Y, blockchunkZPos + (int)RayCastBlock.norm.Z].position = new Vector3mine((int)(RayCastBlock.position.X + RayCastBlock.norm.X), (int)(RayCastBlock.position.Y + RayCastBlock.norm.Y), (int)(RayCastBlock.position.Z + RayCastBlock.norm.Z));
-                //chunk[RayCastBlock.position.X / 16, RayCastBlock.position.Z / 16].Delete();
-                chunk[chunkXPos, chunkZPos].GenFaces(new Vector3mine((int)(RayCastBlock.position.X + RayCastBlock.norm.X), (int)(RayCastBlock.position.Y + RayCastBlock.norm.Y), (int)(RayCastBlock.position.Z + RayCastBlock.norm.Z)));
-                chunk[chunkXPos, chunkZPos].ReBuildChunk();
-             }
+
+                PlaceBlock(new Vector3(RayCastBlock.position.X+ (int)RayCastBlock.norm.X, RayCastBlock.position.Y + (int)RayCastBlock.norm.Y, RayCastBlock.position.Z + (int)RayCastBlock.norm.Z), new Block(BlockType.DIRT));
+                
+            }
             if (e.Button == MouseButton.Left)
             {
                 Console.WriteLine($"Looking at block X: {RayCastBlock.position.X}, Y: {RayCastBlock.position.Y}, Z: {RayCastBlock.position.Z}, Type: {RayCastBlock.type}");
 
                 //if 
 
-                
 
-                chunk[chunkXPos, chunkZPos].chunkBlocks[blockchunkXPos, RayCastBlock.position.Y, blockchunkZPos].type = BlockType.EMPTY;
-                //new Block(new Vector3mine(RayCastBlock.position.X, RayCastBlock.position.Y, RayCastBlock.position.Z),BlockType.DIRT);
-                //chunk[chunkXPos, chunkZPos].chunkBlocks[blockchunkXPos, RayCastBlock.position.Y, blockchunkZPos].position = new Vector3mine(RayCastBlock.position.X, RayCastBlock.position.Y, RayCastBlock.position.Z);
-                //chunk[RayCastBlock.position.X / 16, RayCastBlock.position.Z / 16].Delete();
-                //chunk[chunkXPos, chunkZPos].Genered = false; chunk[chunkXPos, chunkZPos].Builded = false;
-                chunk[chunkXPos, chunkZPos].GenFaces(new Vector3mine(RayCastBlock.position.X, RayCastBlock.position.Y, RayCastBlock.position.Z));
-                chunk[chunkXPos, chunkZPos].ReBuildChunk();
+
+                PlaceBlock(new Vector3(RayCastBlock.position.X, RayCastBlock.position.Y, RayCastBlock.position.Z), new Block(BlockType.EMPTY));
             }
 
 
             // Pass coordinates of point to a_Position
 
         }
-        
+
+
+        public static Block PlaceBlock(Vector3 vector, Block block)
+        {
+
+
+            vector.X+=ChunksRenderDistance * 16 / 2;
+            vector.Z+=ChunksRenderDistance * 16 / 2;
+
+            vector.X = (int)(vector.X % (16 * ChunksRenderDistance));
+            vector.Z = (int)(vector.Z % (16 * ChunksRenderDistance));
+
+            if (vector.X < 0) { vector.X += (ChunksRenderDistance * 16); }
+            if (vector.Z < 0) { vector.Z += (ChunksRenderDistance * 16); }
+
+            var number = Array.IndexOf(temparray1, (int)(vector.X / 16) * ChunksRenderDistance + (int)(vector.Z / 16));
+
+            var xdelta = (int)(number / ChunksRenderDistance);
+            var zdelta = (int)(number % ChunksRenderDistance);
+            
+            chunk[xdelta, zdelta].chunkBlocks[((int)vector.X % 16), (int)vector.Y, ((int)vector.Z % 16)]=block;
+            chunk[xdelta, zdelta].GenFaces(new Vector3mine((int)(0), (int)(0), (int)(0)));
+            chunk[xdelta, zdelta].ReBuildChunk();
+
+            return block;
+        }
+
+
         public static Block GetBlock(Vector3 vector) {
             Block block = new Block(BlockType.EMPTY);
 
@@ -254,14 +260,20 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
 
             //Camera.absposition
 
-            var deltax= ((int)(Camera.absposition.X / (16))) * 16;
-            var deltaz = ((int)(Camera.absposition.Z / (16))) * 16;
+            ////var deltax= ((int)(Camera.absposition.X / 16)) * 16;
+            ////var deltaz = ((int)(Camera.absposition.Z / 16)) * 16;
 
-            vector.X-=deltax;
-            vector.Z -=deltaz;
+            ////vector.X-=deltax;
+            ////vector.Z -=deltaz;
 
-            //vector.X=(int)(vector.X%(16*ChunksRenderDistance));
-            //vector.Z=(int)(vector.Z%(16*ChunksRenderDistance));
+            vector.X=(int)(vector.X%(16*ChunksRenderDistance));
+            vector.Z=(int)(vector.Z%(16*ChunksRenderDistance));
+
+            if (vector.X < 0) {vector.X+=(ChunksRenderDistance*16); }
+            if (vector.Z < 0) { vector.Z += (ChunksRenderDistance * 16); }
+
+            //vector.X = Math.Sign(vector.X) * (int)(vector.X % (16 * ChunksRenderDistance));
+            //vector.Z = Math.Sign(vector.Z) * (int)(vector.Z % (16 * ChunksRenderDistance));
 
             //int chunkXPos = (int)(vector.X) / 16;
             //int chunkZPos = (int)(vector.Z) / 16;
@@ -457,7 +469,7 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
         const int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
         const int MAX_FRAMESKIP = 10;
 
-        public const int ChunksRenderDistance = 32;
+        public const int ChunksRenderDistance = 16;
         public static int[] temparray1 = new int[ChunksRenderDistance * ChunksRenderDistance];
 
         public static int chunkX=0;
@@ -655,7 +667,7 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
             public static void Point2(object? absposition)
         {
 
-           
+            
 
 
             /*for (int x = 0; x < ChunksRenderDistance; x++)

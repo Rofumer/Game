@@ -100,49 +100,49 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
 
             if (input.IsKeyDown(Keys.W))
             {
-                //var block = Game.GetBlock(new Vector3((int)(position.X + ChunksRenderDistance * 16 / 2 + front.X * SPEED * (float)e.Time), (int)position.Y, (int)(position.Z + ChunksRenderDistance * 16 / 2 + front.X * SPEED * (float)e.Time)));
+                var block = Game.GetBlock(new Vector3((int)(absposition.X + ChunksRenderDistance * 16 / 2 + front.X * SPEED * (float)e.Time), (int)absposition.Y, (int)(absposition.Z + ChunksRenderDistance * 16 / 2 + front.X * SPEED * (float)e.Time)));
 
-                //if (block.type == BlockType.EMPTY)
-                //{
+                if (block.type == BlockType.EMPTY)
+                {
 
                     //position.X += front.X * SPEED * (float)e.Time;
                     //position.Z += front.Z * SPEED * (float)e.Time;
                     absposition.X += front.X * SPEED * (float)e.Time;
                     absposition.Z += front.Z * SPEED * (float)e.Time;
-                //}
+                }
             }
             if (input.IsKeyDown(Keys.A))
             {
-                //var block = Game.GetBlock(new Vector3((int)(position.X + ChunksRenderDistance * 16 / 2 - right.X * SPEED * (float)e.Time), (int)position.Y, (int)(position.Z + ChunksRenderDistance * 16 / 2 - right.Z * SPEED * (float)e.Time)));
-                //if (block.type == BlockType.EMPTY)
-                //{
+                var block = Game.GetBlock(new Vector3((int)(absposition.X + ChunksRenderDistance * 16 / 2 - right.X * SPEED * (float)e.Time), (int)absposition.Y, (int)(absposition.Z + ChunksRenderDistance * 16 / 2 - right.Z * SPEED * (float)e.Time)));
+                if (block.type == BlockType.EMPTY)
+                {
                     //position.X -= right.X * SPEED * (float)e.Time;
                     //position.Z -= right.Z * SPEED * (float)e.Time;
                     absposition.X -= right.X * SPEED * (float)e.Time;
                     absposition.Z -= right.Z * SPEED * (float)e.Time;
-                //}
+                }
             }
             if (input.IsKeyDown(Keys.S))
             {
-                //var block = Game.GetBlock(new Vector3((int)(position.X + ChunksRenderDistance * 16 / 2 - front.X * SPEED * (float)e.Time), (int)position.Y, (int)(position.Z + ChunksRenderDistance * 16 / 2 - front.Z * SPEED * (float)e.Time)));
-                //if (block.type == BlockType.EMPTY)
-                //{
+                var block = Game.GetBlock(new Vector3((int)(absposition.X + ChunksRenderDistance * 16 / 2 - front.X * SPEED * (float)e.Time), (int)absposition.Y, (int)(absposition.Z + ChunksRenderDistance * 16 / 2 - front.Z * SPEED * (float)e.Time)));
+                if (block.type == BlockType.EMPTY)
+                {
                     //position.X -= front.X * SPEED * (float)e.Time;
                     //position.Z -= front.Z * SPEED * (float)e.Time;
                     absposition.X -= front.X * SPEED * (float)e.Time;
                     absposition.Z -= front.Z * SPEED * (float)e.Time;
-               // }
+                }
             }
             if (input.IsKeyDown(Keys.D))
             {
-                //var block = Game.GetBlock(new Vector3((int)(position.X + ChunksRenderDistance * 16 / 2 + right.X * SPEED * (float)e.Time), (int)position.Y, (int)(position.Z + ChunksRenderDistance * 16 / 2 + right.Z * SPEED * (float)e.Time)));
-                //if (block.type == BlockType.EMPTY)
-                //{
+                var block = Game.GetBlock(new Vector3((int)(absposition.X + ChunksRenderDistance * 16 / 2 + right.X * SPEED * (float)e.Time), (int)absposition.Y, (int)(absposition.Z + ChunksRenderDistance * 16 / 2 + right.Z * SPEED * (float)e.Time)));
+                if (block.type == BlockType.EMPTY)
+                {
                     //position.X += right.X * SPEED * (float)e.Time;
                     //position.Z += right.Z * SPEED * (float)e.Time;
                     absposition.X += right.X * SPEED * (float)e.Time;
                     absposition.Z += right.Z * SPEED * (float)e.Time;
-                //}
+                }
             }
 
             if (input.IsKeyDown(Keys.Space))
@@ -152,12 +152,12 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
             }
             if (input.IsKeyDown(Keys.LeftShift))
             {
-                //var block = Game.GetBlock(new Vector3((int)position.X + ChunksRenderDistance * 16 / 2, (int)(position.Y-SPEED * (float)e.Time), (int)position.Z + ChunksRenderDistance * 16 / 2));
-                //if (block.type == BlockType.EMPTY)
-                //{
+                var block = Game.GetBlock(new Vector3((int)absposition.X + ChunksRenderDistance * 16 / 2, (int)(absposition.Y-SPEED * (float)e.Time), (int)absposition.Z + ChunksRenderDistance * 16 / 2));
+                if (block.type == BlockType.EMPTY)
+                {
                 //position.Y -= SPEED * (float)e.Time;
                 absposition.Y -= SPEED * (float)e.Time;
-                //}
+                }
             }
 
 

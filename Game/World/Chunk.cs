@@ -194,13 +194,7 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj.World
                     {
                         int numFaces = 0;
 
-                        if (x == vector.X && y == vector.Y && z == vector.Z)
-
-                        {
-
-                            Console.WriteLine("test");
                         
-                        }
 
                         if (chunkBlocks[x, y, z].type != BlockType.EMPTY)
                         {
