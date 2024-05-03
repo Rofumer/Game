@@ -10,6 +10,8 @@ using Minecraft_Clone_Tutorial_Series_videoproj.Graphics;
 using Minecraft_Clone_Tutorial_Series_videoproj.World;
 using static Minecraft_Clone_Tutorial_Series_videoproj.Game;
 using System.Threading;
+using GlmSharp;
+using OpenTK.Graphics.OpenGL;
 //using static Minecraft_Clone_Tutorial_Series_videoproj.Program;
 
 namespace Minecraft_Clone_Tutorial_Series_videoproj
@@ -17,7 +19,7 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
     public class Camera
     {
         // CONSTANTS
-        private float SPEED = 10f;
+        private float SPEED = 8f;
         private float SCREENWIDTH;
         private float SCREENHEIGHT;
         private float SENSITIVITY = 5f;
@@ -26,6 +28,12 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
         public Vector3 position;
         // position vars
         public static Vector3 absposition;
+        public static Vector3 colblockX;
+        public static Vector3 colblockZ;
+        public static Vector3 colblockXvd;
+        public static Vector3 colblockZvu;
+        public static Vector3 colblockXvu;
+        public static Vector3 colblockZvd;
 
         public Vector3 tempabsposition;
         public static Vector3 previousposition;
@@ -100,9 +108,11 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
 
             if (input.IsKeyDown(Keys.W))
             {
-                var block = Game.GetBlock(new Vector3((int)(absposition.X + ChunksRenderDistance * 16 / 2 + front.X * SPEED * (float)e.Time), (int)absposition.Y, (int)(absposition.Z + ChunksRenderDistance * 16 / 2 + front.X * SPEED * (float)e.Time)));
+                //var block = Game.GetBlock(new Vector3((int)(absposition.X + ChunksRenderDistance * 16 / 2 + front.X * SPEED * (float)e.Time), (int)absposition.Y, (int)(absposition.Z + ChunksRenderDistance * 16 / 2 + front.X * SPEED * (float)e.Time)));
 
-                if (block.type == BlockType.EMPTY)
+                if (World.Collisions._IsCollisionBody(new Vector3(ChunksRenderDistance * 16 / 2 + front.X * SPEED * (float)e.Time, 0, ChunksRenderDistance * 16 / 2 + front.Z * SPEED * (float)e.Time)).result == 3)
+
+                //if (block.type == BlockType.EMPTY)
                 {
 
                     //position.X += front.X * SPEED * (float)e.Time;
@@ -110,11 +120,147 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
                     absposition.X += front.X * SPEED * (float)e.Time;
                     absposition.Z += front.Z * SPEED * (float)e.Time;
                 }
+                else
+                {
+
+                    
+
+                    var collisionZ = World.Collisions._IsCollisionBody(new Vector3(ChunksRenderDistance * 16 / 2, 0, ChunksRenderDistance * 16 / 2 + front.Z * SPEED * (float)e.Time));
+                    colblockZvd = Collisions.vd;
+                    colblockZvu = Collisions.vu;
+                    var collisionX = World.Collisions._IsCollisionBody(new Vector3(ChunksRenderDistance * 16 / 2 + front.X * SPEED * (float)e.Time, 0, ChunksRenderDistance * 16 / 2));
+                    colblockXvd = Collisions.vd;
+                    colblockXvu = Collisions.vu;
+
+                    if (collisionZ.result == 2)
+                    {
+                        colblockZ = collisionZ.vector - new Vector3(ChunksRenderDistance * 16 / 2, 0, ChunksRenderDistance * 16 / 2);
+                    }
+
+                    if (collisionX.result == 2)
+                    {
+                        colblockX = collisionX.vector - new Vector3(ChunksRenderDistance * 16 / 2, 0, ChunksRenderDistance * 16 / 2);
+                    }
+
+                    if (collisionX.result == 3)
+                    {
+
+                        float koef = 0;
+
+                        if (Math.Sign(front.Z) > 0) koef = 0.0001f;
+
+                        //absposition.Z = World.Collisions._IsCollisionBody(new Vector3(ChunksRenderDistance * 16 / 2 + front.X * SPEED * (float)e.Time, 0, ChunksRenderDistance * 16 / 2 + front.Z * SPEED * (float)e.Time)).vector.Z - ChunksRenderDistance * 16 / 2 - Math.Sign(front.Z);
+                        absposition.Z = collisionZ.vector.Z - ChunksRenderDistance * 16 / 2 - Math.Sign(front.Z) + Math.Sign(front.Z)*0.2f -koef;
+                        //  absposition.X += front.X * SPEED * (float)e.Time;
+                        absposition.X += front.X * SPEED * (float)e.Time;
+
+                        //absposition.X = (float)Math.Floor(absposition.X);
+                        //absposition.Z = (float)Math.Floor(absposition.Z); 
+                    }
+
+                    if (collisionZ.result == 3)
+                    {
+
+                        float koef = 0;
+
+                        if (Math.Sign(front.X) > 0) koef = 0.0001f;
+
+                        //absposition.X = World.Collisions._IsCollisionBody(new Vector3(ChunksRenderDistance * 16 / 2 + front.X * SPEED * (float)e.Time, 0, ChunksRenderDistance * 16 / 2 + front.Z * SPEED * (float)e.Time)).vector.X-ChunksRenderDistance * 16 / 2-Math.Sign(front.X);
+                        absposition.X = collisionX.vector.X - ChunksRenderDistance * 16 / 2 - Math.Sign(front.X)+ Math.Sign(front.X)*0.2f - koef;
+                        //  absposition.X += front.X * SPEED * (float)e.Time;
+                        absposition.Z += front.Z * SPEED * (float)e.Time;
+
+                        //absposition.X = (float)Math.Floor(absposition.X);
+                        //absposition.Z = (float)Math.Floor(absposition.Z); 
+
+                     
+                    }
+
+                    if (collisionX.result == 2 && collisionZ.result==2)
+                    {
+
+                        float koefz = 0;
+
+                        if (Math.Sign(front.Z) > 0) koefz = 0.0001f;
+
+                        //absposition.Z = World.Collisions._IsCollisionBody(new Vector3(ChunksRenderDistance * 16 / 2 + front.X * SPEED * (float)e.Time, 0, ChunksRenderDistance * 16 / 2 + front.Z * SPEED * (float)e.Time)).vector.Z - ChunksRenderDistance * 16 / 2 - Math.Sign(front.Z);
+                        absposition.Z = collisionZ.vector.Z - ChunksRenderDistance * 16 / 2 - Math.Sign(front.Z) + Math.Sign(front.Z) * 0.2f - koefz;
+                        
+
+                        //absposition.X = (float)Math.Floor(absposition.X);
+                        //absposition.Z = (float)Math.Floor(absposition.Z); 
+                    
+
+                        float koefx = 0;
+
+                        if (Math.Sign(front.X) > 0) koefx = 0.0001f;
+
+                        //absposition.X = World.Collisions._IsCollisionBody(new Vector3(ChunksRenderDistance * 16 / 2 + front.X * SPEED * (float)e.Time, 0, ChunksRenderDistance * 16 / 2 + front.Z * SPEED * (float)e.Time)).vector.X-ChunksRenderDistance * 16 / 2-Math.Sign(front.X);
+                        absposition.X = collisionX.vector.X - ChunksRenderDistance * 16 / 2 - Math.Sign(front.X) + Math.Sign(front.X) * 0.2f - koefx;
+                        
+
+                        //absposition.X = (float)Math.Floor(absposition.X);
+                        //absposition.Z = (float)Math.Floor(absposition.Z); 
+
+
+                    }
+
+                    /*if (collisionX.result == 2 && collisionZ.result == 2)
+                    {
+
+
+                        if (collisionX.vector.X == collisionZ.vector.X || collisionX.vector.X == collisionZ.vector.X - 1 || collisionX.vector.X == collisionZ.vector.X + 1)
+                        {
+
+                            if (Camera.absposition.X == collisionX.vector.X - 1 - ChunksRenderDistance * 16 / 2)
+                            {
+
+                                absposition.X = collisionX.vector.X - ChunksRenderDistance * 16 / 2 - Math.Sign(front.X);
+                                //  absposition.X += front.X * SPEED * (float)e.Time;
+                                absposition.Z += front.Z * SPEED * (float)e.Time;
+
+                            }
+
+                        }
+
+
+                        if (collisionX.vector.Z == collisionZ.vector.Z || collisionX.vector.Z == collisionZ.vector.Z - 1 || collisionX.vector.Z == collisionZ.vector.Z + 1)
+                        { 
+                            if (Camera.absposition.Z == collisionZ.vector.Z - ChunksRenderDistance * 16 / 2 - 1)
+                            {
+
+                                absposition.Z = collisionZ.vector.Z - ChunksRenderDistance * 16 / 2 - Math.Sign(front.Z);
+                                //  absposition.X += front.X * SPEED * (float)e.Time;
+                                absposition.X += front.X * SPEED * (float)e.Time;
+
+                            }
+
+                        }
+
+                    }*/
+
+
+                    /*
+                    if (collisionX.result == 2 && collisionZ.result == 2)
+                    {
+
+                        absposition.Z = World.Collisions._IsCollisionBody(new Vector3(ChunksRenderDistance * 16 / 2 + front.X * SPEED * (float)e.Time, 0, ChunksRenderDistance * 16 / 2 + front.Z * SPEED * (float)e.Time)).vector.Z - ChunksRenderDistance * 16 / 2 - Math.Sign(front.Z);
+                        //  absposition.X += front.X * SPEED * (float)e.Time;
+                        absposition.X = World.Collisions._IsCollisionBody(new Vector3(ChunksRenderDistance * 16 / 2 + front.X * SPEED * (float)e.Time, 0, ChunksRenderDistance * 16 / 2 + front.Z * SPEED * (float)e.Time)).vector.X - ChunksRenderDistance * 16 / 2 - Math.Sign(front.X);
+
+                        //absposition.X = (float)Math.Floor(absposition.X);
+                        //absposition.Z = (float)Math.Floor(absposition.Z); 
+                    }*/
+
+                }
+                
+
             }
             if (input.IsKeyDown(Keys.A))
             {
                 var block = Game.GetBlock(new Vector3((int)(absposition.X + ChunksRenderDistance * 16 / 2 - right.X * SPEED * (float)e.Time), (int)absposition.Y, (int)(absposition.Z + ChunksRenderDistance * 16 / 2 - right.Z * SPEED * (float)e.Time)));
-                if (block.type == BlockType.EMPTY)
+                //if (block.type == BlockType.EMPTY)
+                if (World.Collisions._IsCollisionBody(new Vector3(ChunksRenderDistance * 16 / 2 - right.X * SPEED * (float)e.Time, 0, ChunksRenderDistance * 16 / 2 - right.Z * SPEED * (float)e.Time)).result == 3)
                 {
                     //position.X -= right.X * SPEED * (float)e.Time;
                     //position.Z -= right.Z * SPEED * (float)e.Time;
@@ -125,7 +271,8 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
             if (input.IsKeyDown(Keys.S))
             {
                 var block = Game.GetBlock(new Vector3((int)(absposition.X + ChunksRenderDistance * 16 / 2 - front.X * SPEED * (float)e.Time), (int)absposition.Y, (int)(absposition.Z + ChunksRenderDistance * 16 / 2 - front.Z * SPEED * (float)e.Time)));
-                if (block.type == BlockType.EMPTY)
+                //if (block.type == BlockType.EMPTY)
+                if (World.Collisions._IsCollisionBody(new Vector3(ChunksRenderDistance * 16 / 2 - front.X * SPEED * (float)e.Time, 0, ChunksRenderDistance * 16 / 2 - front.Z * SPEED * (float)e.Time)).result == 3)
                 {
                     //position.X -= front.X * SPEED * (float)e.Time;
                     //position.Z -= front.Z * SPEED * (float)e.Time;
@@ -136,7 +283,8 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
             if (input.IsKeyDown(Keys.D))
             {
                 var block = Game.GetBlock(new Vector3((int)(absposition.X + ChunksRenderDistance * 16 / 2 + right.X * SPEED * (float)e.Time), (int)absposition.Y, (int)(absposition.Z + ChunksRenderDistance * 16 / 2 + right.Z * SPEED * (float)e.Time)));
-                if (block.type == BlockType.EMPTY)
+                //if (block.type == BlockType.EMPTY)
+                if (World.Collisions._IsCollisionBody(new Vector3(ChunksRenderDistance * 16 / 2 + right.X * SPEED * (float)e.Time, 0, ChunksRenderDistance * 16 / 2 + right.Z * SPEED * (float)e.Time)).result == 3)
                 {
                     //position.X += right.X * SPEED * (float)e.Time;
                     //position.Z += right.Z * SPEED * (float)e.Time;
@@ -152,14 +300,22 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
             }
             if (input.IsKeyDown(Keys.LeftShift))
             {
-                var block = Game.GetBlock(new Vector3((int)absposition.X + ChunksRenderDistance * 16 / 2, (int)(absposition.Y-SPEED * (float)e.Time), (int)absposition.Z + ChunksRenderDistance * 16 / 2));
-                if (block.type == BlockType.EMPTY)
+                var block = Game.GetBlock(new Vector3((int)absposition.X + ChunksRenderDistance * 16 / 2, (int)(absposition.Y - SPEED * (float)e.Time), (int)absposition.Z + ChunksRenderDistance * 16 / 2));
+
+                //if (block.type == BlockType.EMPTY)
+                if (World.Collisions._IsCollisionBody(new Vector3(ChunksRenderDistance * 16 / 2, -SPEED * (float)e.Time, ChunksRenderDistance * 16 / 2)).result == 3)
                 {
-                //position.Y -= SPEED * (float)e.Time;
-                absposition.Y -= SPEED * (float)e.Time;
+                    //position.Y -= SPEED * (float)e.Time;
+                    absposition.Y -= SPEED * (float)e.Time;
+                }
+                else if (World.Collisions._IsCollisionBody(new Vector3(ChunksRenderDistance * 16 / 2, -SPEED * (float)e.Time, ChunksRenderDistance * 16 / 2)).result == 1)
+                
+                {
+
+
+                    Camera.absposition.Y = (float)Math.Floor(Camera.absposition.Y);
                 }
             }
-
 
             //previousposition.Y = 0;
 

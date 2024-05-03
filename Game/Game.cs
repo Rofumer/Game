@@ -948,7 +948,7 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
             mainRenderWindow.CreateMainLight(new Vector3(0, 0, 0), new Vector3(255, 0, 255));
 
             RayCastCube=mainRenderWindow.CreateCube(new Color4(255,0,0,255),1,1,1);
-            PlayerCube= mainRenderWindow.CreateCube(new Color4(0, 0, 255, 255), 2, 4, 2);
+            PlayerCube= mainRenderWindow.CreateCube(new Color4(0, 0, 255, 255), 0.6f, 1.8f, 0.6f);
             //mainRenderWindow.DrawText("text",0,0, new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0))), new Color4(1,0,0,1));
 
 
@@ -1296,6 +1296,9 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
             var text3 = "Looking at block:";
             var text4 = $"FPS: {rendfps}, TPS: {rendtps}";
             var text5 = "Player position:" + Camera.absposition;
+            var text6 = "Collision blockX:" + Camera.colblockX+" ColPos1: "+ (Camera.colblockXvd - new Vector3(ChunksRenderDistance * 16 / 2,0, ChunksRenderDistance * 16 / 2)) + ":" + (Camera.colblockXvu - new Vector3(ChunksRenderDistance * 16 / 2, 0, ChunksRenderDistance * 16 / 2));
+            var text7 = "Collision blockZ:" + Camera.colblockZ + " ColPos2: " + (Camera.colblockZvd - new Vector3(ChunksRenderDistance * 16 / 2, 0, ChunksRenderDistance * 16 / 2)) + ":" + (Camera.colblockZvu - new Vector3(ChunksRenderDistance * 16 / 2, 0, ChunksRenderDistance * 16 / 2));
+
 
             if (RayCastBlock.type != BlockType.EMPTY){
                 text3 = $"Looking at block X: {RayCastBlock.position.X}, Y: {RayCastBlock.position.Y}, Z: {RayCastBlock.position.Z}, Type: {RayCastBlock.type}, END: {RayCastBlock.end}, IEND: {RayCastBlock.iend}, Normal: {RayCastBlock.norm}";
@@ -1315,6 +1318,10 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
             font.DrawText(renderer, text3, new System.Numerics.Vector2(50, 50), FSColor.Blue, _rads, origin, scale);
             font.DrawText(renderer, text4, new System.Numerics.Vector2(50, 75), FSColor.Blue, _rads, origin, scale);
             font.DrawText(renderer, text5, new System.Numerics.Vector2(50, 100), FSColor.Blue, _rads, origin, scale);
+            font.DrawText(renderer, text6, new System.Numerics.Vector2(50, 125), FSColor.Blue, _rads, origin, scale);
+            font.DrawText(renderer, text7, new System.Numerics.Vector2(50, 150), FSColor.Blue, _rads, origin, scale);
+            Camera.colblockZ = new Vector3(0,0,0);
+            Camera.colblockX = new Vector3(0, 0, 0);
             renderer.End();
 
             //_rads += 0.01f;
@@ -1384,7 +1391,7 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
 
             }
 
-            mainRenderWindow.TranslateObject(camera.position.X, camera.position.Y, camera.position.Z, PlayerCube);
+            mainRenderWindow.TranslateObject(camera.position.X, camera.position.Y-0.6f, camera.position.Z, PlayerCube);
 
             MouseState mouse = MouseState;
             KeyboardState input = KeyboardState;
@@ -1429,14 +1436,17 @@ namespace Minecraft_Clone_Tutorial_Series_videoproj
 
 
 
-                if (GetBlock(new Vector3((int)Camera.absposition.X+ChunksRenderDistance * 16/2, (int)(Camera.absposition.Y - 2), (int)(Camera.absposition.Z)+ChunksRenderDistance * 16/2)).type == BlockType.EMPTY)
+                //if (GetBlock(new Vector3((int)Camera.absposition.X+ChunksRenderDistance * 16/2, (int)(Camera.absposition.Y - 2), (int)(Camera.absposition.Z)+ChunksRenderDistance * 16/2)).type == BlockType.EMPTY)
+                if (World.Collisions._IsCollisionBody(new Vector3(ChunksRenderDistance * 16 / 2, -0.1f, ChunksRenderDistance * 16 / 2)).result == 3)
                 {
 
                     //if()
 
-                    Camera.absposition.Y -= 0.3f;
-                
+                    Camera.absposition.Y -= 0.1f;
+
                 }
+                else if(World.Collisions._IsCollisionBody(new Vector3(ChunksRenderDistance * 16 / 2, -0.1f, ChunksRenderDistance * 16 / 2)).result == 1)
+                { Camera.absposition.Y = (float)Math.Floor(Camera.absposition.Y); }
 
 
                 
